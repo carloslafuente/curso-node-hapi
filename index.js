@@ -6,6 +6,7 @@ const vision = require('@hapi/vision');
 const inert = require('@hapi/inert');
 const path = require('path');
 const routes = require('./routes');
+const site = require('./controllers/site');
 
 const server = hapi.server({
   port: process.env.PORT || 3000,
@@ -37,14 +38,16 @@ const initViews = async () => {
 const init = async () => {
   try {
     await declarePlugins();
-    server.route(routes);
     // Definiendo las opciones de estado de las cokies en una variable user
     server.state('user', {
       ttl: 1000 * 60 * 60 * 24 * 7,
       isSecure: process.env.NODE_ENV === 'prod',
       encoding: 'base64json',
     });
+
+    server.route(routes);
     await initViews();
+    server.ext('onPreResponse', site.fileNotFound);
     await server.start();
   } catch (error) {
     console.error(error);
@@ -54,11 +57,11 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (error) => {
-  console.error(`[onhandledRejection]: ${error.message}`, errors);
+  console.error(`[onhandledRejection]: ${error.message}`, error);
 });
 
 process.on('unhandledException', (error) => {
-  console.error(`[onhandledException]: ${error.message}`, errors);
+  console.error(`[onhandledException]: ${error.message}`, error);
 });
 
 init();

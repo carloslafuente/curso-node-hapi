@@ -2,6 +2,7 @@
 
 const users = require('../models/index').users;
 const boom = require('@hapi/boom');
+const { template } = require('handlebars');
 
 async function createUser(req, h) {
   let result;
@@ -51,8 +52,20 @@ function logoutUser(req, h) {
 }
 
 function failValidation(req, h, error) {
-  console.log('Aqui');
-  return boom.badRequest('Fallo la validacion', req.payload);
+  const templates = {
+    '/create-user': 'register',
+    '/login-user': 'login',
+  };
+  // retorno la vista con base a la ruta donde se originó el error de validación
+  // es importante detener la propagación del error en este punto y responder (takeover)
+  // takeover finaliza el livecycle inmediatamente para responder el error
+  return h
+    .view(templates[req.path], {
+      titulo: 'Error de validacion',
+      error: 'Por favor complete los campos requeridos',
+    })
+    .code(404)
+    .takeover();
 }
 
 module.exports = {
