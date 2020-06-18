@@ -34,11 +34,29 @@ const initRoutes = async () => {
   });
   server.route({
     method: 'GET',
+    path: '/register',
+    handler: (req, h) => {
+      return h.view('register', {
+        title: 'Register',
+      });
+    },
+  });
+  server.route({
+    method: 'POST',
+    path: '/create-user',
+    handler: (req, h) => {
+      console.log(req.payload);
+      return 'Usuario creado';
+    },
+  });
+  // Cargamos los archivos estaticos, como estilos e imagenes
+  server.route({
+    method: 'GET',
     path: '/{param*}',
     handler: {
       directory: {
         path: '.',
-        index: ['index.html'],
+        // index: ['index.html'],
       },
     },
   });
@@ -49,6 +67,7 @@ const initViews = async () => {
     engines: {
       hbs: handlebars,
     },
+    // Declaramos la carpeta de las vistas, estara en la misma ruta que este archivo en views
     relativeTo: __dirname,
     path: 'views',
     layout: true,
@@ -75,3 +94,25 @@ const init = async () => {
 };
 
 init();
+
+// El objeto request nos permite obtener datos de la petición recibida desde el cliente. El método pasado como parámetro para la creación de este objeto define si trabajaremos con GET o POST.
+
+// Proipiedades del request:
+
+// request.path
+// request.method
+// request.get
+// request.payload: es en esta propiedad donde recibimos los datos enviados con el método POST.
+// Ciclo de vida del objeto request, se refiere a los eventos que suceden durante la carga, existencia y descarga del objeto:
+
+// OnRequest
+// OnPreAuth
+// OnCredentials
+// OnPostAuth
+// OnPreHandler
+// OnPostHandler
+// OnPreResponse
+// Más información sobre el ciclo de vida del objeto request en el repositorio oficial del proyecto: Link
+
+// Código: Definimos rutas GET y POST para registrar usuarios y recibir
+// parámetros en el request.
