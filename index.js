@@ -2,27 +2,18 @@
 
 const hapi = require('@hapi/hapi');
 
-// Servidor: Unidad basica y principal del framework, Creamos el servidor
 const server = hapi.server({
   port: process.env.PORT || 3000,
   host: process.env.HOST || 'localhost',
 });
 
 const init = async () => {
-  // Ruta: Define puntos de interaccion para la aplicacion
   server.route({
-    // Definimos el method: Es el metodo HTTP por el cual un Browser o un cliente
-    // debe acceder a la ruta
     method: 'GET',
-    // Definimos el path: Define parte de la url que sera accedida por el cliente
+
     path: '/',
-    // Definimos el handler: Funcion que se ejecuta cuando se accede a la ruta
-    // (QUE ES LO QUE SE HARA CUANDO SE ACCEDA A LA RUTA)
+
     handler: (req, h) => {
-      // h es una coleccion de utilidades y propiedades relativas a enviar
-      // informacion de respuesta
-      // h.response: Crea un objeto de respuesta
-      // h.redirect: Redirecciona una peticion
       return h.response('Hola Mundo!').code(200);
     },
   });
@@ -43,3 +34,15 @@ const init = async () => {
 };
 
 init();
+
+// Servidor: Unidad basica y principal del framework, Creamos el servidor
+// Ruta: Define puntos de interaccion para la aplicacion
+// Definimos el method: Es el metodo HTTP por el cual un Browser o un cliente
+// debe acceder a la ruta
+// Definimos el path: Define parte de la url que sera accedida por el cliente
+// Definimos el handler: Funcion que se ejecuta cuando se accede a la ruta
+// (QUE ES LO QUE SE HARA CUANDO SE ACCEDA A LA RUTA)
+// h es una coleccion de utilidades y propiedades relativas a enviar
+// informacion de respuesta
+// h.response: Crea un objeto de respuesta
+// h.redirect: Redirecciona una peticion
