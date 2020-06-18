@@ -9,9 +9,15 @@ async function createUser(req, h) {
     result = await users.createUser(req.payload);
   } catch (error) {
     console.error(error);
-    return h.response('Problemas al crear el usuario').code(500);
+    return h.view('register', {
+      titulo: 'Registro',
+      error: 'Error al crear el usuario',
+    });
   }
-  return h.response(`Usuario creado ID: ${result}`).code(201);
+  return h.view('register', {
+    titulo: 'Home',
+    success: 'Usuario creado exitosamente',
+  });
 }
 
 async function validateUser(req, h) {
@@ -19,11 +25,19 @@ async function validateUser(req, h) {
   try {
     result = await users.validateUser(req.payload);
     if (!result) {
-      return h.response('Email o contraseña incorrecta').code(401);
+      //   return h.response('Email o contraseña incorrecta').code(401);
+      return h.view('login', {
+        titulo: 'Login',
+        error: 'Email o contraseña incorrecta',
+      });
     }
   } catch (error) {
     console.error(error);
-    return h.response('Problemas al loguear el usuario').code(500);
+    // return h.response('Problemas al loguear el usuario').code(500);
+    return h.view('login', {
+      titulo: 'Login',
+      error: 'Problemas al loguear el usuario',
+    });
   }
   // Seteando las credenciales en la cokie del usuario
   return h.redirect('/').state('user', {
