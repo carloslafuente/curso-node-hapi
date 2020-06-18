@@ -1,13 +1,12 @@
 'use strict';
 
-const users = require('../models/index').users;
+const User = require('../models/index').user;
 const boom = require('@hapi/boom');
-const { template } = require('handlebars');
 
 async function createUser(req, h) {
   let result;
   try {
-    result = await users.createUser(req.payload);
+    result = await User.createUser(req.payload);
   } catch (error) {
     console.error(error);
     return h.view('register', {
@@ -24,7 +23,7 @@ async function createUser(req, h) {
 async function validateUser(req, h) {
   let result;
   try {
-    result = await users.validateUser(req.payload);
+    result = await User.validateUser(req.payload);
     if (!result) {
       //   return h.response('Email o contraseña incorrecta').code(401);
       return h.view('login', {
@@ -55,6 +54,7 @@ function failValidation(req, h, error) {
   const templates = {
     '/create-user': 'register',
     '/login-user': 'login',
+    '/create-question': 'ask',
   };
   // retorno la vista con base a la ruta donde se originó el error de validación
   // es importante detener la propagación del error en este punto y responder (takeover)

@@ -3,6 +3,7 @@
 const joi = require('@hapi/joi');
 const site = require('./controllers/site');
 const user = require('./controllers/user');
+const question = require('./controllers/question');
 
 module.exports = [
   {
@@ -53,6 +54,25 @@ module.exports = [
       },
     },
     handler: user.validateUser,
+  },
+  {
+    method: 'GET',
+    path: '/ask',
+    handler: site.ask,
+  },
+  {
+    method: 'POST',
+    path: '/create-question',
+    options: {
+      validate: {
+        payload: joi.object({
+          title: joi.string().required(),
+          description: joi.string().required(),
+        }),
+        failAction: user.failValidation,
+      },
+    },
+    handler: question.createQuestion,
   },
   {
     method: 'GET',

@@ -1,7 +1,5 @@
 'use strict';
 
-const { server } = require('@hapi/hapi');
-
 function home(req, h) {
   return h.view('index', {
     title: 'Home',
@@ -41,10 +39,21 @@ function fileNotFound(req, h) {
   return h.continue;
 }
 
+function ask(req, h) {
+  if (!req.state.user) {
+    return h.redirect('/login');
+  }
+  return h.view('ask', {
+    title: 'Crear pregunta',
+    user: req.state.user,
+  });
+}
+
 module.exports = {
   home,
   register,
   login,
   notFound,
   fileNotFound,
+  ask,
 };

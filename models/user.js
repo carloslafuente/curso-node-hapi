@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 
-class Users {
+class User {
   constructor(db) {
     this.db = db;
     this.ref = this.db.ref('/');
@@ -43,4 +43,4 @@ class Users {
   }
 }
 
-module.exports = Users;
+module.exports = User;

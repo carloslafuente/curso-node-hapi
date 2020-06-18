@@ -2,7 +2,9 @@
 
 const firebase = require('firebase-admin');
 const serviceAccount = require('../config/firebase.json');
-const Users = require('./users');
+
+const User = require('./user');
+const Question = require('./question');
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
@@ -12,5 +14,6 @@ firebase.initializeApp({
 const db = firebase.database();
 
 module.exports = {
-  users: new Users(db),
+  user: new User(db),
+  question: new Question(db),
 };
