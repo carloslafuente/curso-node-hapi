@@ -1,6 +1,8 @@
 'use strict';
 
 const hapi = require('@hapi/hapi');
+const handlebars = require('handlebars');
+const vision = require('@hapi/vision');
 const inert = require('@hapi/inert');
 const path = require('path');
 
@@ -17,15 +19,29 @@ const server = hapi.server({
 
 const init = async () => {
   try {
-    // Registrar los plugins que HAPI usara, 
+    // Registrar los plugins que HAPI usara,
     // en este caso inert para subir archivos estaticos
     await server.register(inert);
+    await server.register(vision);
+
+    server.views({
+      engines: {
+        hbs: handlebars,
+      },
+      relativeTo: __dirname,
+      path: 'views',
+      layout: true,
+      layoutPath: 'views',
+    });
+
     server.route({
       method: 'GET',
       path: '/home',
       handler: (req, h) => {
         // Gracias a inert accedemos al metodo file
-        return h.file('index.html');
+        return h.view('index', {
+          title: 'Home',
+        });
       },
     });
     // Ruta para servir los archivos estaticos
