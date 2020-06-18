@@ -1,33 +1,49 @@
 'use strict';
 
 const hapi = require('@hapi/hapi');
+const inert = require('@hapi/inert');
+const path = require('path');
 
 const server = hapi.server({
   port: process.env.PORT || 3000,
   host: process.env.HOST || 'localhost',
+  // Se declara la ruta de la carpeta de los archivos estaticos
+  routes: {
+    files: {
+      relativeTo: path.join(__dirname, 'public'),
+    },
+  },
 });
 
 const init = async () => {
-  server.route({
-    method: 'GET',
-
-    path: '/',
-
-    handler: (req, h) => {
-      return h.response('Hola Mundo!').code(200);
-    },
-  });
-  server.route({
-    method: 'GET',
-    path: '/redirect',
-    handler: (req, h) => {
-      return h.redirect('https://platzi.com');
-    },
-  });
   try {
+    // Registrar los plugins que HAPI usara, 
+    // en este caso inert para subir archivos estaticos
+    await server.register(inert);
+    server.route({
+      method: 'GET',
+      path: '/home',
+      handler: (req, h) => {
+        // Gracias a inert accedemos al metodo file
+        return h.file('index.html');
+      },
+    });
+    // Ruta para servir los archivos estaticos
+    server.route({
+      method: 'GET',
+      path: '/{param*}',
+      handler: {
+        directory: {
+          path: '.',
+          index: ['index.html'],
+        },
+      },
+    });
+    // Iniciamos el servidor
     await server.start();
   } catch (error) {
     console.error(error);
+    // Salir de nodejs con un codigo de error (1), (0) es un codigo de exito
     process.exit(1);
   }
   console.log(`Servidor corriendo en: ${server.info.uri}`);
