@@ -19,7 +19,18 @@ const init = async () => {
     // Definimos el handler: Funcion que se ejecuta cuando se accede a la ruta
     // (QUE ES LO QUE SE HARA CUANDO SE ACCEDA A LA RUTA)
     handler: (req, h) => {
-      return 'Hola Mundo!';
+      // h es una coleccion de utilidades y propiedades relativas a enviar
+      // informacion de respuesta
+      // h.response: Crea un objeto de respuesta
+      // h.redirect: Redirecciona una peticion
+      return h.response('Hola Mundo!').code(200);
+    },
+  });
+  server.route({
+    method: 'GET',
+    path: '/redirect',
+    handler: (req, h) => {
+      return h.redirect('https://platzi.com');
     },
   });
   try {
