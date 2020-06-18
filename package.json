@@ -1,0 +1,28 @@
+{
+  "name": "curso-node-hapi",
+  "version": "1.0.0",
+  "description": "Curso de Nodejs con Hapi",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon",
+    "lint": "standard",
+    "lint-fix": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carloslafuente/curso-node-hapi.git"
+  },
+  "author": "Carlos La Fuente",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carloslafuente/curso-node-hapi/issues"
+  },
+  "homepage": "https://github.com/carloslafuente/curso-node-hapi#readme",
+  "dependencies": {
+    "@hapi/hapi": "^19.1.1"
+  },
+  "devDependencies": {
+    "standard": "^14.3.4"
+  }
+}
