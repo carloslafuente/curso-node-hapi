@@ -5,6 +5,7 @@ const handlebars = require('handlebars');
 const vision = require('@hapi/vision');
 const inert = require('@hapi/inert');
 const path = require('path');
+const routes = require('./routes');
 
 const server = hapi.server({
   port: process.env.PORT || 3000,
@@ -20,46 +21,6 @@ const server = hapi.server({
 const declarePlugins = async () => {
   await server.register(inert);
   await server.register(vision);
-};
-
-const initRoutes = async () => {
-  server.route({
-    method: 'GET',
-    path: '/home',
-    handler: (req, h) => {
-      return h.view('index', {
-        title: 'Home',
-      });
-    },
-  });
-  server.route({
-    method: 'GET',
-    path: '/register',
-    handler: (req, h) => {
-      return h.view('register', {
-        title: 'Register',
-      });
-    },
-  });
-  server.route({
-    method: 'POST',
-    path: '/create-user',
-    handler: (req, h) => {
-      console.log(req.payload);
-      return 'Usuario creado';
-    },
-  });
-  // Cargamos los archivos estaticos, como estilos e imagenes
-  server.route({
-    method: 'GET',
-    path: '/{param*}',
-    handler: {
-      directory: {
-        path: '.',
-        // index: ['index.html'],
-      },
-    },
-  });
 };
 
 const initViews = async () => {
@@ -80,7 +41,7 @@ const init = async () => {
     // Registrar los plugins que HAPI usara
     await declarePlugins();
     // Iniciamos las rutas
-    await initRoutes();
+    server.route(routes);
     // Iniciamos las vistas
     await initViews();
     // Iniciamos el servidor
