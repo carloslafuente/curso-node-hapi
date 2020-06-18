@@ -38,6 +38,12 @@ const init = async () => {
   try {
     await declarePlugins();
     server.route(routes);
+    // Definiendo las opciones de estado de las cokies en una variable user
+    server.state('user', {
+      ttl: 1000 * 60 * 60 * 24 * 7,
+      isSecure: process.env.NODE_ENV === 'prod',
+      encoding: 'base64json',
+    });
     await initViews();
     await server.start();
   } catch (error) {
