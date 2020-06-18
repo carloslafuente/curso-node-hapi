@@ -53,4 +53,12 @@ const init = async () => {
   console.log(`Servidor corriendo en: ${server.info.uri}`);
 };
 
+process.on('unhandledRejection', (error) => {
+  console.error(`[onhandledRejection]: ${error.message}`, errors);
+});
+
+process.on('unhandledException', (error) => {
+  console.error(`[onhandledException]: ${error.message}`, errors);
+});
+
 init();
