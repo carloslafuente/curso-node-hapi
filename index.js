@@ -24,7 +24,7 @@ const declarePlugins = async () => {
 };
 
 const initViews = async () => {
-  server.views({
+  await server.views({
     engines: {
       hbs: handlebars,
     },
