@@ -42,13 +42,14 @@ class Question {
     const getAQuestion = await this.collection.child(questionId).once('value');
     const question = getAQuestion.val();
     const answers = question.answers;
+    // const array = Object.keys(answers);
     if (!user.email === question.owner.email) {
       return false;
     }
-    for (let key of answers) {
-      answers[key].correct = key === answerId;
+    for (let key in answers) {
+      answers[key].correct = (key === answerId);
     }
-    const update = await this.collection.child('answers').update(answers);
+    const update = await this.collection.child(questionId).child('answers').update(answers);
     return update;
   }
 }
