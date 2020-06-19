@@ -1,12 +1,13 @@
 'use strict';
 
 const hapi = require('@hapi/hapi');
-const handlebars = require('handlebars');
+const handlebars = require('./lib/helpers');
 const vision = require('@hapi/vision');
 const inert = require('@hapi/inert');
 const path = require('path');
 const routes = require('./routes');
 const site = require('./controllers/site');
+const methods = require('./lib/methods');
 
 const server = hapi.server({
   port: process.env.PORT || 3000,
@@ -38,6 +39,9 @@ const initViews = async () => {
 const init = async () => {
   try {
     await declarePlugins();
+
+    server.method('setAnswerRight', methods.setAnswerRight);
+
     // Definiendo las opciones de estado de las cokies en una variable user
     server.state('user', {
       ttl: 1000 * 60 * 60 * 24 * 7,

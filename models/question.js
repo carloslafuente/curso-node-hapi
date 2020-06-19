@@ -15,10 +15,41 @@ class Question {
 
     return newQuestion.key;
   }
+
   async getLast(amount) {
     const query = await this.collection.limitToLast(amount).once('value');
     const data = query.val();
     return data;
+  }
+
+  async getOne(id) {
+    const query = await this.collection.child(id).once('value');
+    const data = query.val();
+    return data;
+  }
+
+  async answerAQuestion(data, user) {
+    let answer = { ...data };
+    const newAnswer = await this.collection
+      .child(answer.id)
+      .child('answers')
+      .push();
+    newAnswer.set({ text: answer.answer, user: user });
+    return newAnswer;
+  }
+
+  async setAnswerRight(questionId, answerId, user) {
+    const getAQuestion = await this.collection.child(questionId).once('value');
+    const question = getAQuestion.val();
+    const answers = question.answers;
+    if (!user.email === question.owner.email) {
+      return false;
+    }
+    for (let key of answers) {
+      answers[key].correct = key === answerId;
+    }
+    const update = await this.collection.child('answers').update(answers);
+    return update;
   }
 }
 
