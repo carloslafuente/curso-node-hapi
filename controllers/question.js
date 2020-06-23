@@ -1,14 +1,37 @@
 'use strict';
 
 const Question = require('../models/index').question;
+// Para la subida de archivos destructuramos del modulo fs de node
+const { writeFile } = require('fs');
+const { promisify } = require('util');
+const { join } = require('path');
+const { v1: uuid } = require('uuid');
+
+const write = promisify(writeFile);
 
 async function createQuestion(req, h) {
   if (!req.state.user) {
     return h.redirect('/login');
   }
-  let result;
+  let result, filename;
   try {
-    result = await Question.createQuestion(req.payload, req.state.user);
+    if (req.payload.image != '') {
+      filename = `${uuid()}.png`;
+      writeFile(
+        join(__dirname, '..', 'public', 'uploads', filename),
+        req.payload.image,
+        (err) => {
+          if (err) reject(err);
+          else console.log('Subio bien');
+        }
+      );
+      // await write(join(__dirname, '..', 'public', 'uploads', filename), image);
+    }
+    result = await Question.createQuestion(
+      req.payload,
+      req.state.user,
+      filename
+    );
     console.log(`Pregunta creada con el ID: ${result}`);
   } catch (error) {
     console.error(error);
@@ -20,7 +43,7 @@ async function createQuestion(req, h) {
       .code(500)
       .takeover();
   }
-  return h.response(`Pregunta creada con el ID ${result}`);
+  return h.redirect(`/question/${result}`);
 }
 
 async function answerQuestion(req, h) {

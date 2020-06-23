@@ -9,6 +9,12 @@ module.exports = [
   {
     method: 'GET',
     path: '/',
+    options: {
+      cache: {
+        expiresIn: 1000 * 30,
+        privacy: 'private',
+      },
+    },
     handler: site.home,
   },
   {
@@ -68,6 +74,7 @@ module.exports = [
         payload: joi.object({
           title: joi.string().required(),
           description: joi.string().required(),
+          image: joi.any().optional(),
         }),
         failAction: user.failValidation,
       },

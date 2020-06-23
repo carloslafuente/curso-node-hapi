@@ -41,6 +41,12 @@ const init = async () => {
     await declarePlugins();
 
     server.method('setAnswerRight', methods.setAnswerRight);
+    server.method('getLast', methods.getLast, {
+      cache: {
+        expiresIn: 1000 * 60,
+        generateTimeout: 2000,
+      },
+    });
 
     // Definiendo las opciones de estado de las cokies en una variable user
     server.state('user', {

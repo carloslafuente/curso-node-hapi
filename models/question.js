@@ -7,9 +7,12 @@ class Question {
     this.collection = this.ref.child('questions');
   }
 
-  async createQuestion(data, user) {
+  async createQuestion(data, user, filename) {
     let question = { ...data };
     question.owner = user;
+    if (filename) {
+      question.filename = filename;
+    }
     const newQuestion = this.collection.push();
     newQuestion.set(question);
 
@@ -47,9 +50,12 @@ class Question {
       return false;
     }
     for (let key in answers) {
-      answers[key].correct = (key === answerId);
+      answers[key].correct = key === answerId;
     }
-    const update = await this.collection.child(questionId).child('answers').update(answers);
+    const update = await this.collection
+      .child(questionId)
+      .child('answers')
+      .update(answers);
     return update;
   }
 }
