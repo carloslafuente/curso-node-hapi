@@ -1,6 +1,6 @@
 'use strict';
 
-const joi = require('@hapi/joi');
+const Joi = require('@hapi/joi');
 const site = require('./controllers/site');
 const user = require('./controllers/user');
 const question = require('./controllers/question');
@@ -27,10 +27,10 @@ module.exports = [
     path: '/create-user',
     options: {
       validate: {
-        payload: joi.object({
-          name: joi.string().required().min(3),
-          email: joi.string().email().required(),
-          password: joi.string().required().min(6),
+        payload: Joi.object({
+          name: Joi.string().required().min(3),
+          email: Joi.string().email().required(),
+          password: Joi.string().required().min(6),
         }),
         failAction: user.failValidation,
       },
@@ -52,9 +52,9 @@ module.exports = [
     path: '/login-user',
     options: {
       validate: {
-        payload: joi.object({
-          email: joi.string().email().required(),
-          password: joi.string().required().min(6),
+        payload: Joi.object({
+          email: Joi.string().email().required(),
+          password: Joi.string().required().min(6),
         }),
         failAction: user.failValidation,
       },
@@ -70,11 +70,25 @@ module.exports = [
     method: 'POST',
     path: '/create-question',
     options: {
+      payload: {
+        maxBytes: 1000 * 1000 * 5, // 5 Mb
+        output: 'stream',
+        multipart: {
+          output: 'file',
+        },
+        parse: true,
+        allow: [
+          'application/json',
+          'image/png',
+          'multipart/form-data',
+          'application/pdf',
+        ],
+      },
       validate: {
-        payload: joi.object({
-          title: joi.string().required(),
-          description: joi.string().required(),
-          image: joi.any().optional(),
+        payload: Joi.object({
+          title: Joi.string().required(),
+          description: Joi.string().required(),
+          image: Joi.any().optional(),
         }),
         failAction: user.failValidation,
       },
@@ -91,9 +105,9 @@ module.exports = [
     path: '/answer-question',
     options: {
       validate: {
-        payload: joi.object({
-          answer: joi.string().required(),
-          id: joi.string().required(),
+        payload: Joi.object({
+          answer: Joi.string().required(),
+          id: Joi.string().required(),
         }),
         failAction: user.failValidation,
       },

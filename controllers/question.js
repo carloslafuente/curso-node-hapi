@@ -2,12 +2,10 @@
 
 const Question = require('../models/index').question;
 // Para la subida de archivos destructuramos del modulo fs de node
-const { writeFile } = require('fs');
+const fs = require('fs');
 const { promisify } = require('util');
 const { join } = require('path');
 const { v1: uuid } = require('uuid');
-
-const write = promisify(writeFile);
 
 async function createQuestion(req, h) {
   if (!req.state.user) {
@@ -15,17 +13,21 @@ async function createQuestion(req, h) {
   }
   let result, filename;
   try {
-    if (req.payload.image != '') {
+    if (req.payload.image != null) {
       filename = `${uuid()}.png`;
-      writeFile(
-        join(__dirname, '..', 'public', 'uploads', filename),
-        req.payload.image,
-        (err) => {
-          if (err) reject(err);
-          else console.log('Subio bien');
-        }
-      );
-      // await write(join(__dirname, '..', 'public', 'uploads', filename), image);
+      fs.readFile(req.payload.image.path, (err, data) => {
+        fs.writeFile(
+          join(__dirname, '..', 'public', 'uploads', filename),
+          data,
+          (err) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log(data);
+            }
+          }
+        );
+      });
     }
     result = await Question.createQuestion(
       req.payload,
