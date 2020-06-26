@@ -8,14 +8,15 @@
       <div class="row">
         <div class="col">
           {{#with error}}
-          <div class="container alert alert-danger" role="alert">
-            {{this}}
-          </div>
+            <div class="container alert alert-danger" role="alert">
+              {{this}}
+            </div>
           {{/with}}
+
           {{#with success}}
-          <div class="container alert alert-success" role="success">
-            {{this}}
-          </div>
+            <div class="container alert alert-success" role="success">
+              {{this}}
+            </div>
           {{/with}}
           <form method="POST" action="/create-user">
             <div class="form-group">
@@ -36,6 +37,7 @@
             </div>
 
             <div class="text-center mt-5">
+              <input type="hidden" name="crumb" value="{{crumb}}">
               <button type="submit" class="btn btn-primary">Registrarse</button>
             </div>
           </form>

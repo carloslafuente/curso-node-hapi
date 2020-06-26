@@ -8,6 +8,12 @@ const path = require('path');
 const routes = require('./routes');
 const site = require('./controllers/site');
 const methods = require('./lib/methods');
+const { stdout } = require('process');
+const good = require('@hapi/good');
+const goodConsole = require('@hapi/good-console');
+const crumb = require('@hapi/crumb');
+const scooter = require('@hapi/scooter');
+const blankie = require('blankie');
 
 const server = hapi.server({
   port: process.env.PORT || 3000,
@@ -22,6 +28,46 @@ const server = hapi.server({
 const declarePlugins = async () => {
   await server.register(inert);
   await server.register(vision);
+  await server.register({
+    plugin: good,
+    options: {
+      reporters: {
+        console: [
+          {
+            module: goodConsole,
+          },
+          'stdout',
+        ],
+      },
+    },
+  });
+  await server.register({
+    plugin: require('./lib/api'),
+    options: {
+      prefix: 'api',
+    },
+  });
+  await server.register({
+    plugin: crumb,
+    options: {
+      cookieOptions: {
+        isSecure: process.env.NODE_ENV === 'prod',
+      },
+    },
+  });
+  await server.register([
+    scooter,
+    {
+      plugin: blankie,
+      options: {
+        defaultSrc: `'self' 'unsafe-inline'`,
+        styleSrc: `'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com/`,
+        fontSrc: `'self' 'unsafe-inline' data:`,
+        scriptSrc: `'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ https://maxcdn.bootstrapcdn.com/ https://code.jquery.com/`,
+        generateNonces: false,
+      },
+    },
+  ]);
 };
 
 const initViews = async () => {
@@ -63,15 +109,15 @@ const init = async () => {
     console.error(error);
     process.exit(1);
   }
-  console.log(`Servidor corriendo en: ${server.info.uri}`);
+  server.log('info', `Servidor corriendo en: ${server.info.uri}`);
 };
 
 process.on('unhandledRejection', (error) => {
-  console.error(`[onhandledRejection]: ${error.message}`, error);
+  server.log('unhandledRejection', error);
 });
 
 process.on('unhandledException', (error) => {
-  console.error(`[onhandledException]: ${error.message}`, error);
+  server.log('unhandledException', error);
 });
 
 init();
